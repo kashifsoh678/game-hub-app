@@ -1,15 +1,24 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Gaming Zone Management System API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: devices
+    description: Device management
+  - name: sessions
+    description: Session management
+  - name: reports
+    description: Reports and analytics
+  - name: settings
+    description: System settings
 paths:
   /healthz:
     get:
@@ -24,7 +33,338 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register user (admin only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /devices:
+    get:
+      operationId: getDevices
+      tags: [devices]
+      summary: Get all devices
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of devices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Device"
+    post:
+      operationId: createDevice
+      tags: [devices]
+      summary: Create a device
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDeviceRequest"
+      responses:
+        "201":
+          description: Device created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Device"
+
+  /devices/{id}:
+    put:
+      operationId: updateDevice
+      tags: [devices]
+      summary: Update a device
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDeviceRequest"
+      responses:
+        "200":
+          description: Device updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Device"
+    delete:
+      operationId: deleteDevice
+      tags: [devices]
+      summary: Delete a device
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Device deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /sessions/start:
+    post:
+      operationId: startSession
+      tags: [sessions]
+      summary: Start a session
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartSessionRequest"
+      responses:
+        "201":
+          description: Session started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        "400":
+          description: Device already in use
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /sessions/stop:
+    post:
+      operationId: stopSession
+      tags: [sessions]
+      summary: Stop a session
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StopSessionRequest"
+      responses:
+        "200":
+          description: Session stopped
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+
+  /sessions:
+    get:
+      operationId: getSessions
+      tags: [sessions]
+      summary: Get session history
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: deviceName
+          in: query
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          schema:
+            type: string
+        - name: endDate
+          in: query
+          schema:
+            type: string
+        - name: filter
+          in: query
+          schema:
+            type: string
+            enum: [today, week, all]
+      responses:
+        "200":
+          description: Session list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionListResponse"
+
+  /sessions/today:
+    get:
+      operationId: getTodaySessions
+      tags: [sessions]
+      summary: Get today's sessions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Today sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Session"
+
+  /reports/daily:
+    get:
+      operationId: getDailyReport
+      tags: [reports]
+      summary: Get daily revenue report
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: days
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Daily report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyReportResponse"
+
+  /reports/monthly:
+    get:
+      operationId: getMonthlyReport
+      tags: [reports]
+      summary: Get monthly stats
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Monthly report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MonthlyReportResponse"
+
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      summary: Get settings
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+    put:
+      operationId: updateSettings
+      tags: [settings]
+      summary: Update settings
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSettingsRequest"
+      responses:
+        "200":
+          description: Settings updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     HealthStatus:
       type: object
@@ -34,3 +374,313 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+        - message
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    RegisterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [admin, staff]
+      required:
+        - name
+        - email
+        - password
+        - role
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+      required:
+        - token
+        - user
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - email
+        - role
+        - createdAt
+
+    Device:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum: [PS5, PS4, PC]
+        hourlyRate:
+          type: number
+        status:
+          type: string
+          enum: [available, in_use]
+        createdAt:
+          type: string
+        activeSession:
+          $ref: "#/components/schemas/ActiveSessionInfo"
+      required:
+        - id
+        - name
+        - type
+        - hourlyRate
+        - status
+        - createdAt
+
+    ActiveSessionInfo:
+      type: object
+      properties:
+        sessionId:
+          type: string
+        startTime:
+          type: string
+      required:
+        - sessionId
+        - startTime
+
+    CreateDeviceRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [PS5, PS4, PC]
+        hourlyRate:
+          type: number
+      required:
+        - name
+        - type
+        - hourlyRate
+
+    UpdateDeviceRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [PS5, PS4, PC]
+        hourlyRate:
+          type: number
+
+    StartSessionRequest:
+      type: object
+      properties:
+        deviceId:
+          type: string
+      required:
+        - deviceId
+
+    StopSessionRequest:
+      type: object
+      properties:
+        deviceId:
+          type: string
+      required:
+        - deviceId
+
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+        deviceId:
+          type: string
+        deviceName:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: ["string", "null"]
+        durationMinutes:
+          type: ["integer", "null"]
+        hourlyRate:
+          type: number
+        totalAmount:
+          type: ["number", "null"]
+        createdBy:
+          type: string
+        operatorName:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - deviceId
+        - deviceName
+        - startTime
+        - hourlyRate
+        - createdBy
+        - operatorName
+        - createdAt
+
+    SessionListResponse:
+      type: object
+      properties:
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Session"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - sessions
+        - total
+        - page
+        - totalPages
+
+    DailyRevenuePoint:
+      type: object
+      properties:
+        date:
+          type: string
+        revenue:
+          type: number
+        sessions:
+          type: integer
+      required:
+        - date
+        - revenue
+        - sessions
+
+    DeviceUsageStat:
+      type: object
+      properties:
+        deviceName:
+          type: string
+        sessions:
+          type: integer
+        revenue:
+          type: number
+      required:
+        - deviceName
+        - sessions
+        - revenue
+
+    DailyReportResponse:
+      type: object
+      properties:
+        dailyRevenue:
+          type: array
+          items:
+            $ref: "#/components/schemas/DailyRevenuePoint"
+        deviceUsage:
+          type: array
+          items:
+            $ref: "#/components/schemas/DeviceUsageStat"
+        todayEarnings:
+          type: number
+        todaySessions:
+          type: integer
+        mostUsedDevice:
+          type: ["string", "null"]
+      required:
+        - dailyRevenue
+        - deviceUsage
+        - todayEarnings
+        - todaySessions
+        - mostUsedDevice
+
+    MonthlyReportResponse:
+      type: object
+      properties:
+        monthlyEarnings:
+          type: number
+        monthlySessions:
+          type: integer
+        avgDailyRevenue:
+          type: number
+      required:
+        - monthlyEarnings
+        - monthlySessions
+        - avgDailyRevenue
+
+    Settings:
+      type: object
+      properties:
+        id:
+          type: string
+        defaultHourlyRate:
+          type: number
+        currency:
+          type: string
+        businessName:
+          type: string
+        timezone:
+          type: string
+      required:
+        - id
+        - defaultHourlyRate
+        - currency
+        - businessName
+        - timezone
+
+    UpdateSettingsRequest:
+      type: object
+      properties:
+        defaultHourlyRate:
+          type: number
+        currency:
+          type: string
+        businessName:
+          type: string
+        timezone:
+          type: string

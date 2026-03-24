@@ -1,0 +1,23 @@
+packages:
+  "recharts": "For the analytics dashboard charts"
+  "date-fns": "For formatting dates and durations"
+  "clsx": "For merging tailwind classes safely"
+  "tailwind-merge": "For merging tailwind classes safely"
+  "lucide-react": "For beautiful consistent icons"
+  "framer-motion": "For page transitions and premium micro-interactions"
+  "react-hook-form": "For robust form handling"
+  "@hookform/resolvers": "For Zod validation integration"
+  "zod": "For schema validation"
+
+images:
+  - path: "artifacts/gaming-zone/public/images/bg-pattern.png"
+    description: "Subtle dark tech grid pattern, high contrast, seamless, very dark grey and black with slight neon green glow at edges, 4k resolution"
+    aspect_ratio: "16:9"
+  - path: "artifacts/gaming-zone/public/images/logo.png"
+    description: "Minimalist glowing neon logo for a gaming zone, sleek, esports aesthetic, abstract controller or abstract G shape"
+    aspect_ratio: "1:1"
+
+notes:
+  - Assuming the API runs on /api as defined in the openapi spec
+  - JWT tokens are stored in localStorage as 'token'
+  - The generated API hooks allow passing request options, which we use to inject the Authorization header
