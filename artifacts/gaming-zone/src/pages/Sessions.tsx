@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { cn } from "@/lib/utils"
 import { useAuth } from "@/hooks/use-auth"
 import { useGetSessions } from "@workspace/api-client-react"
 import { Card } from "@/components/ui/card"

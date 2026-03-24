@@ -41,6 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = (newToken: string, newUser: User) => {
     setToken(newToken);
     queryClient.setQueryData(getGetMeQueryKey(), newUser);
+    setLocation("/dashboard");
   };
 
   const logout = () => {

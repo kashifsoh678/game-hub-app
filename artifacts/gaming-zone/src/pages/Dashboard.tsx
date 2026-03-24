@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { cn } from "@/lib/utils"
 import { useAuth } from "@/hooks/use-auth"
 import { 
   useGetDevices, 
@@ -143,15 +144,6 @@ function DeviceCard({ device }: { device: Device }) {
     </Card>
   )
 }
-
-// Utility to merge classnames safely
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
-
 
 export default function Dashboard() {
   const { authOptions } = useAuth()
