@@ -33,22 +33,22 @@ function ActiveDeviceStats({ device }: { device: Device }) {
   const bill = calculateBill(elapsed, device.hourlyRate)
 
   return (
-    <div className="grid grid-cols-2 gap-3 mt-5">
+    <div className="flex flex-col gap-3 mt-5">
       {/* Timer */}
-      <div className="bg-black/60 rounded-2xl p-4 border border-white/10 flex flex-col gap-1">
-        <div className="flex items-center gap-1.5 mb-1">
+      <div className="bg-black/60 rounded-2xl px-5 py-3 border border-white/10 flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
           <Clock className="w-3.5 h-3.5 text-sky-400" />
-          <p className="text-[10px] font-display uppercase tracking-widest text-sky-400/80 font-bold">Time</p>
+          <p className="text-[10px] font-display uppercase tracking-widest text-sky-400/80 font-bold">Time Elapsed</p>
         </div>
         <p className="text-[1.6rem] font-mono tracking-widest font-bold text-white leading-none tabular-nums">
           {formatDuration(elapsed)}
         </p>
       </div>
       {/* Bill */}
-      <div className="bg-black/60 rounded-2xl p-4 border border-emerald-500/25 flex flex-col gap-1">
-        <div className="flex items-center gap-1.5 mb-1">
+      <div className="bg-black/60 rounded-2xl px-5 py-3 border border-emerald-500/25 flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
           <Receipt className="w-3.5 h-3.5 text-emerald-400" />
-          <p className="text-[10px] font-display uppercase tracking-widest text-emerald-400/80 font-bold">Bill</p>
+          <p className="text-[10px] font-display uppercase tracking-widest text-emerald-400/80 font-bold">Current Bill</p>
         </div>
         <p className="text-[1.6rem] font-mono tracking-widest font-bold text-emerald-400 leading-none tabular-nums">
           {formatCurrency(bill)}
