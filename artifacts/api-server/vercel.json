@@ -1,9 +1,9 @@
 {
   "version": 2,
+  "builds": [
+    { "src": "dist/app.mjs", "use": "@vercel/node" }
+  ],
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "src/app.ts"
-    }
+    { "source": "/api/(.*)", "destination": "dist/app.mjs" }
   ]
 }
