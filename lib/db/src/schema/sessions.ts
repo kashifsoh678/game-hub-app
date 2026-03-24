@@ -1,8 +1,8 @@
 import { pgTable, text, timestamp, numeric, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
-import { devicesTable } from "./devices";
-import { usersTable } from "./users";
+import { devicesTable } from "./devices.js";
+import { usersTable } from "./users.js";
 
 export const sessionsTable = pgTable("sessions", {
   id: text("id").primaryKey(),

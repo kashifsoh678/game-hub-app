@@ -1,4 +1,3 @@
-import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "gaming-zone-secret-key-change-in-production";
@@ -10,15 +9,7 @@ export interface AuthUser {
   name: string;
 }
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: AuthUser;
-    }
-  }
-}
-
-export function authMiddleware(req: Request, res: Response, next: NextFunction) {
+export function authMiddleware(req: any, res: any, next: any) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     res.status(401).json({ error: "Unauthorized" });
@@ -35,7 +26,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   }
 }
 
-export function adminMiddleware(req: Request, res: Response, next: NextFunction) {
+export function adminMiddleware(req: any, res: any, next: any) {
   if (!req.user || req.user.role !== "admin") {
     res.status(403).json({ error: "Forbidden: Admin access required" });
     return;
