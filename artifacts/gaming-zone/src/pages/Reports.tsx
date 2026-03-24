@@ -3,7 +3,7 @@ import { useGetDailyReport, useGetMonthlyReport } from "@workspace/api-client-re
 import { Card } from "@/components/ui/card"
 import { formatCurrency } from "@/lib/utils"
 import { format, parseISO } from "date-fns"
-import { 
+import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area
 } from "recharts"
 import { Activity, CreditCard, Users, Trophy } from "lucide-react"
@@ -28,7 +28,7 @@ export default function Reports() {
           <Icon className="w-6 h-6" />
         </div>
         <p className="text-muted-foreground font-display uppercase tracking-wider text-sm">{title}</p>
-        <p className="text-4xl font-mono font-bold mt-1 tracking-tight text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.1)]">{value}</p>
+        <p className="text-2xl font-mono font-bold mt-1 tracking-tight text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.1)]">{value}</p>
       </div>
     </Card>
   )
@@ -57,31 +57,31 @@ export default function Reports() {
         <p className="text-muted-foreground mt-1">Business performance metrics and usage data.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          title="Today's Revenue" 
-          value={formatCurrency(daily?.todayEarnings || 0)} 
-          icon={Activity} 
-          color="success" 
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <StatCard
+          title="Today's Revenue"
+          value={formatCurrency(daily?.todayEarnings || 0)}
+          icon={Activity}
+          color="success"
         />
-        <StatCard 
-          title="Monthly Revenue" 
-          value={formatCurrency(monthly?.monthlyEarnings || 0)} 
-          icon={CreditCard} 
-          color="primary" 
+        <StatCard
+          title="Monthly Revenue"
+          value={formatCurrency(monthly?.monthlyEarnings || 0)}
+          icon={CreditCard}
+          color="primary"
         />
-        <StatCard 
-          title="Today's Sessions" 
-          value={daily?.todaySessions || 0} 
-          icon={Users} 
-          color="accent" 
+        <StatCard
+          title="Today's Sessions"
+          value={daily?.todaySessions || 0}
+          icon={Users}
+          color="accent"
         />
-        <StatCard 
+        {/* <StatCard 
           title="Top Device" 
           value={daily?.mostUsedDevice || 'N/A'} 
           icon={Trophy} 
           color="secondary" 
-        />
+        /> */}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
@@ -92,27 +92,27 @@ export default function Reports() {
               <AreaChart data={daily?.dailyRevenue || []} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                <XAxis 
-                  dataKey="date" 
-                  stroke="hsl(var(--muted-foreground))" 
-                  tickFormatter={(val) => format(parseISO(val), 'MMM d')} 
-                  tick={{fontFamily: 'monospace', fontSize: 12}}
+                <XAxis
+                  dataKey="date"
+                  stroke="hsl(var(--muted-foreground))"
+                  tickFormatter={(val) => format(parseISO(val), 'MMM d')}
+                  tick={{ fontFamily: 'monospace', fontSize: 12 }}
                 />
-                <YAxis stroke="hsl(var(--muted-foreground))" tick={{fontFamily: 'monospace', fontSize: 12}} />
+                <YAxis stroke="hsl(var(--muted-foreground))" tick={{ fontFamily: 'monospace', fontSize: 12 }} />
                 <Tooltip content={<CustomTooltip />} />
-                <Area 
-                  type="monotone" 
-                  dataKey="revenue" 
-                  name="Revenue" 
-                  stroke="hsl(var(--success))" 
+                <Area
+                  type="monotone"
+                  dataKey="revenue"
+                  name="Revenue"
+                  stroke="hsl(var(--success))"
                   strokeWidth={3}
-                  fillOpacity={1} 
-                  fill="url(#colorRevenue)" 
+                  fillOpacity={1}
+                  fill="url(#colorRevenue)"
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -125,9 +125,9 @@ export default function Reports() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={daily?.deviceUsage || []} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                <XAxis dataKey="deviceName" stroke="hsl(var(--muted-foreground))" tick={{fontFamily: 'monospace', fontSize: 12}} />
-                <YAxis stroke="hsl(var(--muted-foreground))" tick={{fontFamily: 'monospace', fontSize: 12}} />
-                <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(255,255,255,0.02)'}} />
+                <XAxis dataKey="deviceName" stroke="hsl(var(--muted-foreground))" tick={{ fontFamily: 'monospace', fontSize: 12 }} />
+                <YAxis stroke="hsl(var(--muted-foreground))" tick={{ fontFamily: 'monospace', fontSize: 12 }} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.02)' }} />
                 <Bar dataKey="sessions" name="Sessions" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>

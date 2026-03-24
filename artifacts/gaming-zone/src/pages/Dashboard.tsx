@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/hooks/use-auth"
-import { 
-  useGetDevices, 
-  useStartSession, 
-  useStopSession, 
+import {
+  useGetDevices,
+  useStartSession,
+  useStopSession,
   getGetDevicesQueryKey,
   Device,
   GetDevicesQueryResult
@@ -38,9 +38,9 @@ function ActiveDeviceStats({ device }: { device: Device }) {
       <div className="bg-black/60 rounded-2xl px-5 py-3 border border-white/10 flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <Clock className="w-3.5 h-3.5 text-sky-400" />
-          <p className="text-[10px] font-display uppercase tracking-widest text-sky-400/80 font-bold">Time Elapsed</p>
+          <p className="text-[10px] font-display uppercase tracking-widest text-sky-400/80 font-bold">Time</p>
         </div>
-        <p className="text-[1.6rem] font-mono tracking-widest font-bold text-white leading-none tabular-nums">
+        <p className="text-[1.2rem] font-mono tracking-widest font-bold text-white leading-none tabular-nums">
           {formatDuration(elapsed)}
         </p>
       </div>
@@ -48,9 +48,9 @@ function ActiveDeviceStats({ device }: { device: Device }) {
       <div className="bg-black/60 rounded-2xl px-5 py-3 border border-emerald-500/25 flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <Receipt className="w-3.5 h-3.5 text-emerald-400" />
-          <p className="text-[10px] font-display uppercase tracking-widest text-emerald-400/80 font-bold">Current Bill</p>
+          <p className="text-[10px] font-display uppercase tracking-widest text-emerald-400/80 font-bold">Bill</p>
         </div>
-        <p className="text-[1.6rem] font-mono tracking-widest font-bold text-emerald-400 leading-none tabular-nums">
+        <p className="text-[1.2rem] font-mono tracking-widest font-bold text-emerald-400 leading-none tabular-nums">
           {formatCurrency(bill)}
         </p>
       </div>
@@ -61,7 +61,7 @@ function ActiveDeviceStats({ device }: { device: Device }) {
 function DeviceCard({ device }: { device: Device }) {
   const { authOptions } = useAuth()
   const queryClient = useQueryClient()
-  
+
   const startMutation = useStartSession(authOptions)
   const stopMutation = useStopSession(authOptions)
 
@@ -109,6 +109,9 @@ function DeviceCard({ device }: { device: Device }) {
               <span className="inline-flex items-center rounded-lg px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider bg-white/10 text-white/70 border border-white/10">
                 {device.type}
               </span>
+              <span className="inline-flex items-center rounded-lg gap-1 px-2.5 py-0.5 text-[11px] font-bold capitalize tracking-wider bg-white/10 text-white/70 border border-white/10">
+                {device.hourlyRate} <span className="text-white/30 mt-0.5">/hr</span>
+              </span>
               <span className={cn(
                 "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider border",
                 isAvailable
@@ -122,11 +125,6 @@ function DeviceCard({ device }: { device: Device }) {
                 {isAvailable ? "Available" : "In Use"}
               </span>
             </div>
-          </div>
-          <div className="text-right bg-black/30 rounded-xl px-3 py-2 border border-white/5">
-            <p className="text-[10px] text-white/40 font-display uppercase tracking-widest mb-0.5">Rate</p>
-            <p className="text-xl font-bold font-mono text-sky-400 leading-none">{device.hourlyRate}</p>
-            <p className="text-[9px] text-white/30 mt-0.5">PKR/hr</p>
           </div>
         </div>
 
@@ -173,11 +171,12 @@ function DeviceCard({ device }: { device: Device }) {
 
 export default function Dashboard() {
   const { authOptions } = useAuth()
-  
+
   // Refetch every 5 seconds to keep dashboard perfectly in sync across multiple terminals
   const { data: devices, isLoading, isFetching } = useGetDevices({
     ...authOptions,
     query: {
+      queryKey: getGetDevicesQueryKey(),
       refetchInterval: 5000,
     }
   })
@@ -194,13 +193,13 @@ export default function Dashboard() {
   const inUseCount = devices?.filter(d => d.status === "in_use").length || 0
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 ">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-4xl font-display font-bold tracking-tight">Active Terminal</h1>
           <p className="text-muted-foreground mt-1">Real-time device monitoring and session control.</p>
         </div>
-        
+
         <div className="flex items-center gap-4 bg-card/50 backdrop-blur-md border border-white/10 p-3 rounded-2xl">
           <div className="px-4 border-r border-white/10">
             <p className="text-xs font-display text-muted-foreground uppercase mb-1">Available</p>
@@ -216,7 +215,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {devices?.map(device => (
           <DeviceCard key={device.id} device={device} />
         ))}

@@ -29,14 +29,14 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <Link key={item.name} href={item.href} onClick={() => setMobileMenuOpen(false)}>
             <div className={cn(
               "flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 group relative",
-              isActive 
-                ? "bg-primary/10 text-primary border border-primary/20" 
+              isActive
+                ? "bg-primary/10 text-primary border border-primary/20"
                 : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
             )}>
               {isActive && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary rounded-r-full shadow-[0_0_10px_theme(colors.primary.DEFAULT)]" />
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary rounded-r-full shadow-[0_0_10px_var(--color-primary)]" />
               )}
-              <item.icon className={cn("w-5 h-5", isActive && "drop-shadow-[0_0_8px_theme(colors.primary.DEFAULT)]")} />
+              <item.icon className={cn("w-5 h-5", isActive && "drop-shadow-[0_0_8px_var(--color-primary)]")} />
               <span className="font-semibold">{item.name}</span>
             </div>
           </Link>
@@ -46,7 +46,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   )
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative">
+    <div className="h-screen bg-background text-foreground flex flex-col md:flex-row relative">
       {/* Background ambient light */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
@@ -66,12 +66,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
       {/* Sidebar Navigation */}
       <div className={cn(
-        "fixed inset-y-0 left-0 z-50 w-72 bg-card border-r border-white/5 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 md:static",
+        "fixed inset-y-0  h-screen left-0 z-50 w-72 bg-card border-r border-white/5 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 md:static",
         mobileMenuOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
       )}>
         <div className="p-6 flex items-center gap-3 border-b border-white/5">
           <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center border border-primary/30">
-            <Gamepad2 className="w-6 h-6 text-primary drop-shadow-[0_0_8px_theme(colors.primary.DEFAULT)]" />
+            <Gamepad2 className="w-6 h-6 text-primary drop-shadow-[0_0_8px_var(--color-primary)]" />
           </div>
           <div>
             <h1 className="font-display font-bold text-2xl tracking-wider leading-none">ZONE<span className="text-primary">OS</span></h1>
@@ -87,7 +87,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <div className="bg-background/50 rounded-xl p-4 border border-white/5 mb-4">
             <p className="text-sm font-semibold truncate">{user?.name}</p>
             <p className="text-xs text-muted-foreground uppercase font-display tracking-wider mt-1 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-success shadow-[0_0_8px_theme(colors.success.DEFAULT)] inline-block"></span>
+              <span className="w-2 h-2 rounded-full bg-success shadow-[0_0_8px_var(--color-success)] inline-block"></span>
               {user?.role}
             </p>
           </div>
@@ -100,15 +100,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
       {/* Mobile backdrop */}
       {mobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto z-10 relative">
-        <div className="p-4 md:p-8 max-w-7xl mx-auto min-h-full">
+      <main className="flex-1 overflow-y-auto z-10 relative ">
+        <div className="p-4  max-w-7xl mx-auto min-h-full">
           {children}
         </div>
       </main>
