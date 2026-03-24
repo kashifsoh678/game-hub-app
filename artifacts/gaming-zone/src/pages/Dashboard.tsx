@@ -33,20 +33,24 @@ function ActiveDeviceStats({ device }: { device: Device }) {
   const bill = calculateBill(elapsed, device.hourlyRate)
 
   return (
-    <div className="grid grid-cols-2 gap-4 mt-6">
-      <div className="bg-black/40 rounded-xl p-4 border border-white/5 relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-2 opacity-10">
-          <Clock className="w-12 h-12" />
+    <div className="grid grid-cols-2 gap-3 mt-5">
+      {/* Timer */}
+      <div className="bg-black/60 rounded-2xl p-4 border border-white/10 flex flex-col gap-1">
+        <div className="flex items-center gap-1.5 mb-1">
+          <Clock className="w-3.5 h-3.5 text-sky-400" />
+          <p className="text-[10px] font-display uppercase tracking-widest text-sky-400/80 font-bold">Time</p>
         </div>
-        <p className="text-xs font-display uppercase tracking-wider text-muted-foreground mb-1">Time Elapsed</p>
-        <p className="text-2xl font-mono tracking-wider font-bold text-white">{formatDuration(elapsed)}</p>
+        <p className="text-[1.6rem] font-mono tracking-widest font-bold text-white leading-none tabular-nums">
+          {formatDuration(elapsed)}
+        </p>
       </div>
-      <div className="bg-black/40 rounded-xl p-4 border border-white/5 relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-2 opacity-10">
-          <Receipt className="w-12 h-12" />
+      {/* Bill */}
+      <div className="bg-black/60 rounded-2xl p-4 border border-emerald-500/25 flex flex-col gap-1">
+        <div className="flex items-center gap-1.5 mb-1">
+          <Receipt className="w-3.5 h-3.5 text-emerald-400" />
+          <p className="text-[10px] font-display uppercase tracking-widest text-emerald-400/80 font-bold">Bill</p>
         </div>
-        <p className="text-xs font-display uppercase tracking-wider text-muted-foreground mb-1">Current Bill</p>
-        <p className="text-2xl font-mono tracking-wider font-bold text-success drop-shadow-[0_0_8px_theme(colors.success.DEFAULT)]">
+        <p className="text-[1.6rem] font-mono tracking-widest font-bold text-emerald-400 leading-none tabular-nums">
           {formatCurrency(bill)}
         </p>
       </div>
@@ -76,37 +80,62 @@ function DeviceCard({ device }: { device: Device }) {
   const isPending = startMutation.isPending || stopMutation.isPending
 
   return (
-    <Card className={cn(
-      "relative overflow-hidden transition-all duration-300",
-      !isAvailable && "neon-border-destructive"
+    <div className={cn(
+      "relative rounded-2xl overflow-hidden flex flex-col transition-all duration-300 border-2",
+      isAvailable
+        ? "bg-[#0d1a12] border-emerald-500/50 shadow-[0_0_24px_rgba(16,185,129,0.12)]"
+        : "bg-[#1a0d0d] border-red-500/60 shadow-[0_0_24px_rgba(239,68,68,0.18)]"
     )}>
-      {/* Decorative type icon background */}
-      <div className="absolute -right-8 -top-8 text-white/5 pointer-events-none">
-        {device.type === "PC" ? <Monitor className="w-48 h-48" /> : <MonitorSpeaker className="w-48 h-48" />}
+      {/* Color status bar at top */}
+      <div className={cn(
+        "h-1.5 w-full",
+        isAvailable ? "bg-emerald-500" : "bg-red-500"
+      )} />
+
+      {/* Decorative watermark icon */}
+      <div className="absolute -right-6 -bottom-6 opacity-[0.04] pointer-events-none">
+        {device.type === "PC" ? <Monitor className="w-44 h-44" /> : <MonitorSpeaker className="w-44 h-44" />}
       </div>
 
-      <div className="p-6 relative z-10 flex flex-col h-full">
-        <div className="flex justify-between items-start mb-4">
+      <div className="p-5 flex flex-col flex-1 relative z-10">
+
+        {/* Header row: name + rate */}
+        <div className="flex justify-between items-start mb-3">
           <div>
-            <h2 className="text-3xl font-display font-bold text-white tracking-tight">{device.name}</h2>
+            <h2 className="text-2xl font-display font-extrabold text-white tracking-tight leading-tight">
+              {device.name}
+            </h2>
             <div className="flex items-center gap-2 mt-2">
-              <Badge variant="outline">{device.type}</Badge>
-              <Badge variant={isAvailable ? "success" : "destructive"}>
+              <span className="inline-flex items-center rounded-lg px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider bg-white/10 text-white/70 border border-white/10">
+                {device.type}
+              </span>
+              <span className={cn(
+                "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider border",
+                isAvailable
+                  ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/40"
+                  : "bg-red-500/15 text-red-400 border-red-500/40"
+              )}>
+                <span className={cn(
+                  "w-1.5 h-1.5 rounded-full",
+                  isAvailable ? "bg-emerald-400 animate-pulse" : "bg-red-400"
+                )} />
                 {isAvailable ? "Available" : "In Use"}
-              </Badge>
+              </span>
             </div>
           </div>
-          <div className="text-right">
-            <p className="text-sm text-muted-foreground font-display uppercase tracking-wider">Rate</p>
-            <p className="text-lg font-bold font-mono text-primary">{device.hourlyRate} <span className="text-xs font-sans text-muted-foreground font-normal">PKR/hr</span></p>
+          <div className="text-right bg-black/30 rounded-xl px-3 py-2 border border-white/5">
+            <p className="text-[10px] text-white/40 font-display uppercase tracking-widest mb-0.5">Rate</p>
+            <p className="text-xl font-bold font-mono text-sky-400 leading-none">{device.hourlyRate}</p>
+            <p className="text-[9px] text-white/30 mt-0.5">PKR/hr</p>
           </div>
         </div>
 
+        {/* Body */}
         <div className="flex-1">
           {isAvailable ? (
-            <div className="h-28 flex items-center justify-center border-2 border-dashed border-white/10 rounded-xl mt-6">
-              <p className="text-muted-foreground font-display uppercase tracking-widest text-sm flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+            <div className="mt-4 h-24 flex items-center justify-center rounded-xl border-2 border-dashed border-emerald-500/20 bg-emerald-500/5">
+              <p className="text-emerald-500/70 font-display uppercase tracking-widest text-xs flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 Ready for assignment
               </p>
             </div>
@@ -115,33 +144,30 @@ function DeviceCard({ device }: { device: Device }) {
           )}
         </div>
 
-        <div className="mt-8">
+        {/* Action button */}
+        <div className="mt-5">
           {isAvailable ? (
-            <Button 
-              size="xl" 
-              variant="success" 
-              className="w-full shadow-lg"
+            <button
               onClick={handleStart}
               disabled={isPending}
+              className="w-full h-14 rounded-xl text-base font-display font-bold uppercase tracking-widest flex items-center justify-center gap-3 transition-all duration-200 disabled:opacity-50 bg-emerald-500 hover:bg-emerald-400 text-black shadow-[0_4px_20px_rgba(16,185,129,0.4)] hover:shadow-[0_4px_28px_rgba(16,185,129,0.6)] active:scale-[0.98]"
             >
-              <Play className="w-6 h-6 mr-3 fill-current" />
+              <Play className="w-5 h-5 fill-current" />
               Start Session
-            </Button>
+            </button>
           ) : (
-            <Button 
-              size="xl" 
-              variant="destructive" 
-              className="w-full shadow-lg"
+            <button
               onClick={handleStop}
               disabled={isPending}
+              className="w-full h-14 rounded-xl text-base font-display font-bold uppercase tracking-widest flex items-center justify-center gap-3 transition-all duration-200 disabled:opacity-50 bg-red-500 hover:bg-red-400 text-white shadow-[0_4px_20px_rgba(239,68,68,0.4)] hover:shadow-[0_4px_28px_rgba(239,68,68,0.6)] active:scale-[0.98]"
             >
-              <Square className="w-6 h-6 mr-3 fill-current" />
+              <Square className="w-5 h-5 fill-current" />
               Stop & Checkout
-            </Button>
+            </button>
           )}
         </div>
       </div>
-    </Card>
+    </div>
   )
 }
 
