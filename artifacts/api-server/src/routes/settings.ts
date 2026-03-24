@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { randomUUID } from "crypto";
-import { db, settingsTable } from "@workspace/db";
+import { db, settingsTable, eq } from "@workspace/db";
 import { authMiddleware, adminMiddleware } from "../middlewares/auth.js";
 
 const router = Router();
@@ -22,7 +22,7 @@ async function getOrCreateSettings() {
   return created;
 }
 
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", authMiddleware, async (req: any, res: any) => {
   try {
     const settings = await getOrCreateSettings();
     res.json({
@@ -38,7 +38,7 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
-router.put("/", authMiddleware, adminMiddleware, async (req, res) => {
+router.put("/", authMiddleware, adminMiddleware, async (req: any, res: any) => {
   const { defaultHourlyRate, currency, businessName, timezone } = req.body;
 
   try {
@@ -49,7 +49,6 @@ router.put("/", authMiddleware, adminMiddleware, async (req, res) => {
     if (businessName !== undefined) updates.businessName = businessName;
     if (timezone !== undefined) updates.timezone = timezone;
 
-    const { eq } = await import("drizzle-orm");
     const [updated] = await db
       .update(settingsTable)
       .set(updates)

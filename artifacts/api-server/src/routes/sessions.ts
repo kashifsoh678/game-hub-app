@@ -5,7 +5,7 @@ import { authMiddleware } from "../middlewares/auth.js";
 
 const router = Router();
 
-router.post("/start", authMiddleware, async (req, res) => {
+router.post("/start", authMiddleware, async (req: any, res: any) => {
   const { deviceId } = req.body;
   if (!deviceId) {
     res.status(400).json({ error: "deviceId required" });
@@ -71,7 +71,7 @@ router.post("/start", authMiddleware, async (req, res) => {
   }
 });
 
-router.post("/stop", authMiddleware, async (req, res) => {
+router.post("/stop", authMiddleware, async (req: any, res: any) => {
   const { deviceId } = req.body;
   if (!deviceId) {
     res.status(400).json({ error: "deviceId required" });
@@ -129,45 +129,7 @@ router.post("/stop", authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/today", authMiddleware, async (req, res) => {
-  try {
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const sessions = await db
-      .select({
-        session: sessionsTable,
-        deviceName: devicesTable.name,
-        operatorName: usersTable.name,
-      })
-      .from(sessionsTable)
-      .leftJoin(devicesTable, eq(sessionsTable.deviceId, devicesTable.id))
-      .leftJoin(usersTable, eq(sessionsTable.createdBy, usersTable.id))
-      .where(gte(sessionsTable.startTime, startOfDay))
-      .orderBy(sql`${sessionsTable.startTime} DESC`);
-
-    res.json(
-      sessions.map(({ session, deviceName, operatorName }) => ({
-        id: session.id,
-        deviceId: session.deviceId,
-        deviceName: deviceName ?? "",
-        startTime: session.startTime.toISOString(),
-        endTime: session.endTime?.toISOString() ?? null,
-        durationMinutes: session.durationMinutes,
-        hourlyRate: parseFloat(session.hourlyRate),
-        totalAmount: session.totalAmount ? parseFloat(session.totalAmount) : null,
-        createdBy: session.createdBy,
-        operatorName: operatorName ?? "",
-        createdAt: session.createdAt.toISOString(),
-      }))
-    );
-  } catch (err) {
-    req.log.error({ err }, "Get today sessions error");
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", authMiddleware, async (req: any, res: any) => {
   const page = parseInt(String(req.query.page ?? "1"));
   const limit = parseInt(String(req.query.limit ?? "20"));
   const deviceNameFilter = req.query.deviceName as string | undefined;

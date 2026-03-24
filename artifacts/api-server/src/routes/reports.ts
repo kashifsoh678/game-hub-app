@@ -1,11 +1,10 @@
 import { Router } from "express";
-import { db, sessionsTable, devicesTable } from "@workspace/db";
-import { eq, gte, isNotNull, sql } from "drizzle-orm";
+import { db, sessionsTable, devicesTable, eq, gte, isNotNull, sql } from "@workspace/db";
 import { authMiddleware, adminMiddleware } from "../middlewares/auth.js";
 
 const router = Router();
 
-router.get("/daily", authMiddleware, adminMiddleware, async (req, res) => {
+router.get("/daily", authMiddleware, adminMiddleware, async (req: any, res: any) => {
   const days = parseInt(String(req.query.days ?? "7"));
 
   try {
@@ -92,7 +91,7 @@ router.get("/daily", authMiddleware, adminMiddleware, async (req, res) => {
   }
 });
 
-router.get("/monthly", authMiddleware, adminMiddleware, async (req, res) => {
+router.get("/monthly", authMiddleware, adminMiddleware, async (req: any, res: any) => {
   try {
     const startOfMonth = new Date();
     startOfMonth.setDate(1);

@@ -2,13 +2,12 @@ import { Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { randomUUID } from "crypto";
-import { db, usersTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { db, usersTable, eq } from "@workspace/db";
 import { authMiddleware, adminMiddleware, JWT_SECRET_KEY } from "../middlewares/auth.js";
 
 const router = Router();
 
-router.post("/login", async (req, res) => {
+router.post("/login", async (req: any, res: any) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400).json({ error: "Email and password required" });
@@ -51,7 +50,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/register", authMiddleware, adminMiddleware, async (req, res) => {
+router.post("/register", authMiddleware, adminMiddleware, async (req: any, res: any) => {
   const { name, email, password, role } = req.body;
   if (!name || !email || !password || !role) {
     res.status(400).json({ error: "All fields required" });
@@ -86,7 +85,7 @@ router.post("/register", authMiddleware, adminMiddleware, async (req, res) => {
   }
 });
 
-router.get("/me", authMiddleware, async (req, res) => {
+router.get("/me", authMiddleware, async (req: any, res: any) => {
   try {
     const users = await db.select().from(usersTable).where(eq(usersTable.id, req.user!.id)).limit(1);
     const user = users[0];

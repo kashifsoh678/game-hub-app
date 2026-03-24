@@ -5,7 +5,7 @@ import { authMiddleware, adminMiddleware } from "../middlewares/auth.js";
 
 const router = Router();
 
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", authMiddleware, async (req: any, res: any) => {
   try {
     const devices = await db.select().from(devicesTable).orderBy(devicesTable.name);
 
@@ -43,7 +43,7 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
-router.post("/", authMiddleware, adminMiddleware, async (req, res) => {
+router.post("/", authMiddleware, adminMiddleware, async (req: any, res: any) => {
   const { name, type, hourlyRate } = req.body;
   if (!name || !type || hourlyRate === undefined) {
     res.status(400).json({ error: "name, type, and hourlyRate required" });
@@ -71,7 +71,7 @@ router.post("/", authMiddleware, adminMiddleware, async (req, res) => {
   }
 });
 
-router.put("/:id", authMiddleware, adminMiddleware, async (req, res) => {
+router.put("/:id", authMiddleware, adminMiddleware, async (req: any, res: any) => {
   const { id } = req.params;
   const { name, type, hourlyRate } = req.body;
 
@@ -106,7 +106,7 @@ router.put("/:id", authMiddleware, adminMiddleware, async (req, res) => {
   }
 });
 
-router.delete("/:id", authMiddleware, adminMiddleware, async (req, res) => {
+router.delete("/:id", authMiddleware, adminMiddleware, async (req: any, res: any) => {
   const { id } = req.params;
 
   try {
