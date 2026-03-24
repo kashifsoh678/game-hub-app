@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { randomUUID } from "crypto";
-import { db, devicesTable, sessionsTable } from "@workspace/db";
-import { eq, isNull } from "drizzle-orm";
+import { db, devicesTable, sessionsTable, eq, isNull } from "@workspace/db";
 import { authMiddleware, adminMiddleware } from "../middlewares/auth.js";
 
 const router = Router();
@@ -85,7 +84,7 @@ router.put("/:id", authMiddleware, adminMiddleware, async (req, res) => {
     const [device] = await db
       .update(devicesTable)
       .set(updates)
-      .where(eq(devicesTable.id, id))
+      .where(eq(devicesTable.id, id as string))
       .returning();
 
     if (!device) {
@@ -111,7 +110,7 @@ router.delete("/:id", authMiddleware, adminMiddleware, async (req, res) => {
   const { id } = req.params;
 
   try {
-    const device = await db.select().from(devicesTable).where(eq(devicesTable.id, id)).limit(1);
+    const device = await db.select().from(devicesTable).where(eq(devicesTable.id, id as string)).limit(1);
     if (!device[0]) {
       res.status(404).json({ error: "Device not found" });
       return;
@@ -122,7 +121,7 @@ router.delete("/:id", authMiddleware, adminMiddleware, async (req, res) => {
       return;
     }
 
-    await db.delete(devicesTable).where(eq(devicesTable.id, id));
+    await db.delete(devicesTable).where(eq(devicesTable.id, id as string));
     res.json({ success: true, message: "Device deleted" });
   } catch (err) {
     req.log.error({ err }, "Delete device error");

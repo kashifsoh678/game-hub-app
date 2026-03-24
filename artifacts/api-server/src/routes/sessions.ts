@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { randomUUID } from "crypto";
-import { db, devicesTable, sessionsTable, usersTable } from "@workspace/db";
-import { eq, isNull, isNotNull, and, gte, lte, like, sql } from "drizzle-orm";
+import { db, devicesTable, sessionsTable, usersTable, eq, isNull, isNotNull, and, gte, lte, like, sql } from "@workspace/db";
 import { authMiddleware } from "../middlewares/auth.js";
 
 const router = Router();
