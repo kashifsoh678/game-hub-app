@@ -4,6 +4,6 @@
     { "src": "dist/app.mjs", "use": "@vercel/node" }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "dist/app.mjs" }
+    { "source": "/(.*)", "destination": "dist/app.mjs" }
   ]
 }
